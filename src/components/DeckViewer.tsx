@@ -29,6 +29,7 @@ export function DeckViewer({ slug }: { slug: string }) {
 
   const rootRef = useRef<HTMLDivElement>(null)
   const idleTimer = useRef<number | null>(null)
+  const tapStart = useRef<{ x: number; y: number; t: number; id: number } | null>(null)
 
   // ── Fetch manifest ────────────────────────────────────────────────
   useEffect(() => {
@@ -195,6 +196,27 @@ export function DeckViewer({ slug }: { slug: string }) {
     }
   }
 
+  // ── Manual tap detection (Framer Motion's drag="x" suppresses native
+  // click after >3px of finger movement, and onTap is flaky on Android.
+  // A 10px / 500ms window treats real taps as taps even with finger jitter.)
+  const handlePointerDown = (e: React.PointerEvent) => {
+    tapStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      t: Date.now(),
+      id: e.pointerId,
+    }
+  }
+  const handlePointerUp = (e: React.PointerEvent) => {
+    const s = tapStart.current
+    if (!s || s.id !== e.pointerId) return
+    tapStart.current = null
+    const dx = Math.abs(e.clientX - s.x)
+    const dy = Math.abs(e.clientY - s.y)
+    const dt = Date.now() - s.t
+    if (dx < 10 && dy < 10 && dt < 500) toggleChrome()
+  }
+
   // ── Render ────────────────────────────────────────────────────────
   const title = manifest?.name ?? '···'
   const counterCurrent = total > 0 ? String(current + 1).padStart(2, '0') : '--'
@@ -328,7 +350,8 @@ export function DeckViewer({ slug }: { slug: string }) {
               dragElastic={0.18}
               dragMomentum={false}
               onDragEnd={handleDragEnd}
-              onClick={toggleChrome}
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
             >
               <AnimatePresence initial={false} custom={direction} mode="popLayout">
                 <motion.div
