@@ -162,12 +162,26 @@ export function DeckViewer({ slug }: { slug: string }) {
     })
   }, [])
 
+  // Initial mount: show chrome, then idle-hide.
   useEffect(() => {
     pokeChrome()
     return () => {
       if (idleTimer.current) window.clearTimeout(idleTimer.current)
     }
-  }, [pokeChrome, current])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // On slide change: refresh idle timer only if chrome is already visible.
+  // If user hid chrome with a tap, swiping keeps it hidden (immersive mode).
+  useEffect(() => {
+    if (!chromeVisible) return
+    if (idleTimer.current) window.clearTimeout(idleTimer.current)
+    idleTimer.current = window.setTimeout(
+      () => setChromeVisible(false),
+      CONTROLS_IDLE_MS,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current])
 
   // ── Drag handler ──────────────────────────────────────────────────
   const handleDragEnd = (
@@ -314,7 +328,7 @@ export function DeckViewer({ slug }: { slug: string }) {
               dragElastic={0.18}
               dragMomentum={false}
               onDragEnd={handleDragEnd}
-              onTap={toggleChrome}
+              onClick={toggleChrome}
             >
               <AnimatePresence initial={false} custom={direction} mode="popLayout">
                 <motion.div
