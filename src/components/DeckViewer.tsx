@@ -26,6 +26,12 @@ export function DeckViewer({ slug }: { slug: string }) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [chromeVisible, setChromeVisible] = useState(true)
   const [loadedMap, setLoadedMap] = useState<Record<number, boolean>>({})
+  const [debug, setDebug] = useState<{
+    down: string
+    up: string
+    tap: string
+    toggles: number
+  }>({ down: '—', up: '—', tap: '—', toggles: 0 })
 
   const rootRef = useRef<HTMLDivElement>(null)
   const idleTimer = useRef<number | null>(null)
@@ -150,6 +156,7 @@ export function DeckViewer({ slug }: { slug: string }) {
   }, [])
 
   const toggleChrome = useCallback(() => {
+    setDebug((d) => ({ ...d, toggles: d.toggles + 1 }))
     setChromeVisible((v) => {
       if (idleTimer.current) window.clearTimeout(idleTimer.current)
       const nextVisible = !v
@@ -206,15 +213,31 @@ export function DeckViewer({ slug }: { slug: string }) {
       t: Date.now(),
       id: e.pointerId,
     }
+    setDebug((d) => ({
+      ...d,
+      down: `${e.pointerType} id=${e.pointerId} @${Math.round(e.clientX)},${Math.round(e.clientY)}`,
+    }))
   }
   const handlePointerUp = (e: React.PointerEvent) => {
     const s = tapStart.current
-    if (!s || s.id !== e.pointerId) return
+    if (!s || s.id !== e.pointerId) {
+      setDebug((d) => ({
+        ...d,
+        up: `mismatch id=${e.pointerId}${s ? ` want ${s.id}` : ''}`,
+      }))
+      return
+    }
     tapStart.current = null
     const dx = Math.abs(e.clientX - s.x)
     const dy = Math.abs(e.clientY - s.y)
     const dt = Date.now() - s.t
-    if (dx < 10 && dy < 10 && dt < 500) toggleChrome()
+    const isTap = dx < 10 && dy < 10 && dt < 500
+    setDebug((d) => ({
+      ...d,
+      up: `dx=${Math.round(dx)} dy=${Math.round(dy)} dt=${dt}ms`,
+      tap: isTap ? 'YES → toggleChrome()' : `NO (${dx >= 10 || dy >= 10 ? 'moved' : 'slow'})`,
+    }))
+    if (isTap) toggleChrome()
   }
 
   // ── Render ────────────────────────────────────────────────────────
@@ -445,6 +468,21 @@ export function DeckViewer({ slug }: { slug: string }) {
           )
         })}
       </motion.footer>
+
+      {/* ── DEBUG HUD (temporary) ── */}
+      <div
+        className="pointer-events-none absolute left-2 bottom-2 z-30 max-w-[70vw] rounded bg-black/80 px-2 py-1.5 font-mono text-[10px] leading-tight text-lime-300 shadow-lg"
+      >
+        <div>down: {debug.down}</div>
+        <div>up: {debug.up}</div>
+        <div>tap: {debug.tap}</div>
+        <div>
+          toggles: {debug.toggles} · chromeVisible:{' '}
+          <span className={chromeVisible ? 'text-lime-200' : 'text-red-300'}>
+            {String(chromeVisible)}
+          </span>
+        </div>
+      </div>
 
       {/* Corner keyboard hint (desktop, fades out with chrome) */}
       <motion.div
