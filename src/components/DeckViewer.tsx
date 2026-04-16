@@ -148,6 +148,20 @@ export function DeckViewer({ slug }: { slug: string }) {
     )
   }, [])
 
+  const toggleChrome = useCallback(() => {
+    setChromeVisible((v) => {
+      if (idleTimer.current) window.clearTimeout(idleTimer.current)
+      const nextVisible = !v
+      if (nextVisible) {
+        idleTimer.current = window.setTimeout(
+          () => setChromeVisible(false),
+          CONTROLS_IDLE_MS,
+        )
+      }
+      return nextVisible
+    })
+  }, [])
+
   useEffect(() => {
     pokeChrome()
     return () => {
@@ -177,8 +191,6 @@ export function DeckViewer({ slug }: { slug: string }) {
     <div
       ref={rootRef}
       onMouseMove={pokeChrome}
-      onTouchStart={pokeChrome}
-      onClick={pokeChrome}
       className="relative h-[100svh] w-full overflow-hidden bg-black text-neutral-300 select-none [--chrome-ease:cubic-bezier(0.22,1,0.36,1)]"
       style={{ cursor: chromeVisible ? 'default' : 'none' }}
     >
@@ -302,6 +314,7 @@ export function DeckViewer({ slug }: { slug: string }) {
               dragElastic={0.18}
               dragMomentum={false}
               onDragEnd={handleDragEnd}
+              onTap={toggleChrome}
             >
               <AnimatePresence initial={false} custom={direction} mode="popLayout">
                 <motion.div
@@ -328,22 +341,20 @@ export function DeckViewer({ slug }: { slug: string }) {
                     opacity: { duration: 0.32, ease: [0.22, 1, 0.36, 1] },
                     scale: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
                   }}
-                  className="absolute inset-0 grid place-items-center p-2 sm:p-6"
+                  className="absolute inset-0 p-2 sm:p-6"
                 >
-                  <figure className="relative flex h-full w-full items-center justify-center">
-                    {!loadedMap[current] && (
-                      <div className="absolute inset-4 animate-pulse rounded-md bg-neutral-900/40" />
-                    )}
-                    <img
-                      src={slides[current]}
-                      alt={`${title} — slide ${current + 1} of ${total}`}
-                      draggable={false}
-                      onLoad={() =>
-                        setLoadedMap((m) => ({ ...m, [current]: true }))
-                      }
-                      className="block max-h-full max-w-full rounded-[2px] object-contain shadow-[0_60px_120px_-40px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.04)]"
-                    />
-                  </figure>
+                  {!loadedMap[current] && (
+                    <div className="absolute inset-4 animate-pulse rounded-md bg-neutral-900/40" />
+                  )}
+                  <img
+                    src={slides[current]}
+                    alt={`${title} — slide ${current + 1} of ${total}`}
+                    draggable={false}
+                    onLoad={() =>
+                      setLoadedMap((m) => ({ ...m, [current]: true }))
+                    }
+                    className="relative block h-full w-full rounded-[2px] object-contain shadow-[0_60px_120px_-40px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.04)]"
+                  />
                 </motion.div>
               </AnimatePresence>
             </motion.div>
