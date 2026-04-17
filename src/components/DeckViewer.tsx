@@ -26,27 +26,6 @@ export function DeckViewer({ slug }: { slug: string }) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [chromeVisible, setChromeVisible] = useState(true)
   const [loadedMap, setLoadedMap] = useState<Record<number, boolean>>({})
-  const [debug, setDebug] = useState<{
-    down: string
-    up: string
-    tap: string
-    toggles: number
-    pokes: number
-    mm: number
-    pmMouse: number
-    pmTouch: number
-    lastFlip: string
-  }>({
-    down: '—',
-    up: '—',
-    tap: '—',
-    toggles: 0,
-    pokes: 0,
-    mm: 0,
-    pmMouse: 0,
-    pmTouch: 0,
-    lastFlip: '—',
-  })
 
   const rootRef = useRef<HTMLDivElement>(null)
   const idleTimer = useRef<number | null>(null)
@@ -163,22 +142,11 @@ export function DeckViewer({ slug }: { slug: string }) {
     }
   }, [])
 
-  // Track every chromeVisible flip with a timestamp for the HUD.
-  useEffect(() => {
-    const stamp = new Date().toLocaleTimeString(undefined, { hour12: false }) +
-      '.' + String(Date.now() % 1000).padStart(3, '0')
-    setDebug((d) => ({
-      ...d,
-      lastFlip: `${stamp} → ${String(chromeVisible)}`,
-    }))
-  }, [chromeVisible])
-
   // ── Auto-hide chrome ──────────────────────────────────────────────
   const pokeChrome = useCallback(() => {
     // If the user explicitly requested immersive mode (tapped to hide),
     // honor that and ignore auto-wake signals from mouse/trackpad.
     if (userImmersive.current) return
-    setDebug((d) => ({ ...d, pokes: d.pokes + 1 }))
     setChromeVisible(true)
     if (idleTimer.current) window.clearTimeout(idleTimer.current)
     idleTimer.current = window.setTimeout(
@@ -188,7 +156,6 @@ export function DeckViewer({ slug }: { slug: string }) {
   }, [])
 
   const toggleChrome = useCallback(() => {
-    setDebug((d) => ({ ...d, toggles: d.toggles + 1 }))
     setChromeVisible((v) => {
       if (idleTimer.current) window.clearTimeout(idleTimer.current)
       const nextVisible = !v
@@ -247,31 +214,15 @@ export function DeckViewer({ slug }: { slug: string }) {
       t: Date.now(),
       id: e.pointerId,
     }
-    setDebug((d) => ({
-      ...d,
-      down: `${e.pointerType} id=${e.pointerId} @${Math.round(e.clientX)},${Math.round(e.clientY)}`,
-    }))
   }
   const handlePointerUp = (e: React.PointerEvent) => {
     const s = tapStart.current
-    if (!s || s.id !== e.pointerId) {
-      setDebug((d) => ({
-        ...d,
-        up: `mismatch id=${e.pointerId}${s ? ` want ${s.id}` : ''}`,
-      }))
-      return
-    }
+    if (!s || s.id !== e.pointerId) return
     tapStart.current = null
     const dx = Math.abs(e.clientX - s.x)
     const dy = Math.abs(e.clientY - s.y)
     const dt = Date.now() - s.t
-    const isTap = dx < 10 && dy < 10 && dt < 500
-    setDebug((d) => ({
-      ...d,
-      up: `dx=${Math.round(dx)} dy=${Math.round(dy)} dt=${dt}ms`,
-      tap: isTap ? 'YES → toggleChrome()' : `NO (${dx >= 10 || dy >= 10 ? 'moved' : 'slow'})`,
-    }))
-    if (isTap) toggleChrome()
+    if (dx < 10 && dy < 10 && dt < 500) toggleChrome()
   }
 
   // ── Render ────────────────────────────────────────────────────────
@@ -283,18 +234,10 @@ export function DeckViewer({ slug }: { slug: string }) {
   return (
     <div
       ref={rootRef}
-      onMouseMove={() => {
-        // Diagnostic only — compat mousemove fires on touch taps on Android.
-        // Do NOT pokeChrome here or it fights with toggleChrome.
-        setDebug((d) => ({ ...d, mm: d.mm + 1 }))
-      }}
       onPointerMove={(e) => {
-        if (e.pointerType === 'mouse') {
-          setDebug((d) => ({ ...d, pmMouse: d.pmMouse + 1 }))
-          pokeChrome()
-        } else {
-          setDebug((d) => ({ ...d, pmTouch: d.pmTouch + 1 }))
-        }
+        // Only wake chrome on real mouse/trackpad. Touch fires a compat
+        // mousemove on Android that would race with toggleChrome.
+        if (e.pointerType === 'mouse') pokeChrome()
       }}
       className="relative h-[100svh] w-full overflow-hidden bg-black text-neutral-300 select-none [--chrome-ease:cubic-bezier(0.22,1,0.36,1)]"
       style={{ cursor: chromeVisible ? 'default' : 'none' }}
@@ -516,35 +459,6 @@ export function DeckViewer({ slug }: { slug: string }) {
           )
         })}
       </motion.footer>
-
-      {/* ── DEBUG HUD (temporary) ── */}
-      <div
-        className="pointer-events-none absolute left-2 bottom-2 z-30 max-w-[70vw] rounded bg-black/80 px-2 py-1.5 font-mono text-[10px] leading-tight text-lime-300 shadow-lg"
-      >
-        <div>down: {debug.down}</div>
-        <div>up: {debug.up}</div>
-        <div>tap: {debug.tap}</div>
-        <div>
-          toggles: {debug.toggles} · pokes: {debug.pokes}
-        </div>
-        <div>
-          mm: {debug.mm} · pm-mouse: {debug.pmMouse} · pm-touch:{' '}
-          {debug.pmTouch}
-        </div>
-        <div>
-          chromeVisible:{' '}
-          <span className={chromeVisible ? 'text-lime-200' : 'text-red-300'}>
-            {String(chromeVisible)}
-          </span>
-        </div>
-        <div>flip: {debug.lastFlip}</div>
-        <div>
-          immersive:{' '}
-          <span className={userImmersive.current ? 'text-amber-300' : 'text-neutral-400'}>
-            {String(userImmersive.current)}
-          </span>
-        </div>
-      </div>
 
       {/* Corner keyboard hint (desktop, fades out with chrome) */}
       <motion.div
