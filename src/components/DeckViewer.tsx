@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react'
 
 type Manifest = { name: string; slideCount: number }
 
@@ -18,7 +18,13 @@ const SWIPE_POWER = (offset: number, velocity: number) =>
 
 const CONTROLS_IDLE_MS = 2600
 
-export function DeckViewer({ slug }: { slug: string }) {
+export function DeckViewer({
+  slug,
+  onBack,
+}: {
+  slug: string
+  onBack?: () => void
+}) {
   const [manifest, setManifest] = useState<Manifest | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [current, setCurrent] = useState(0)
@@ -276,10 +282,21 @@ export function DeckViewer({ slug }: { slug: string }) {
         }}
       >
         <div className="flex items-center gap-3 min-w-0">
-          <span
-            aria-hidden
-            className="inline-block h-[9px] w-[9px] rounded-full bg-red-500/90 shadow-[0_0_18px_rgba(239,68,68,0.65)]"
-          />
+          {onBack ? (
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Back to deck list"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-neutral-800 bg-neutral-900/40 text-neutral-400 backdrop-blur-sm transition hover:border-neutral-600 hover:bg-neutral-900 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+          ) : (
+            <span
+              aria-hidden
+              className="inline-block h-[9px] w-[9px] rounded-full bg-red-500/90 shadow-[0_0_18px_rgba(239,68,68,0.65)]"
+            />
+          )}
           <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-500">
             Atomy · Deck
           </span>
@@ -465,7 +482,7 @@ export function DeckViewer({ slug }: { slug: string }) {
         aria-hidden
         animate={{ opacity: chromeVisible ? 0.55 : 0 }}
         transition={{ duration: 0.4 }}
-        className="pointer-events-none absolute bottom-5 right-6 z-20 hidden md:flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-600"
+        className="pointer-events-none absolute bottom-5 right-6 z-20 hidden pointer-fine:flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-neutral-600"
       >
         <kbd className="rounded border border-neutral-800 bg-neutral-900/60 px-1.5 py-0.5">←</kbd>
         <kbd className="rounded border border-neutral-800 bg-neutral-900/60 px-1.5 py-0.5">→</kbd>
@@ -492,7 +509,7 @@ function ArrowEdge({
       aria-label={isLeft ? 'Previous slide' : 'Next slide'}
       tabIndex={-1}
       className={
-        'group absolute top-0 z-10 hidden h-full w-24 items-center md:flex ' +
+        'group absolute top-0 z-10 hidden h-full w-24 items-center pointer-fine:flex ' +
         (isLeft ? 'left-0 justify-start pl-4' : 'right-0 justify-end pr-4')
       }
       style={{ pointerEvents: visible ? 'auto' : 'none' }}

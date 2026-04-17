@@ -1,1 +1,5 @@
-{ "name": "Hemohim", "slideCount": 9 }
+{
+  "name": "Hemohim",
+  "slug": "hemohim",
+  "slideCount": 9
+}
