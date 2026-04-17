@@ -249,7 +249,11 @@ export function DeckViewer({ slug }: { slug: string }) {
   return (
     <div
       ref={rootRef}
-      onMouseMove={pokeChrome}
+      onPointerMove={(e) => {
+        // Only wake chrome on real mouse movement. Android fires compat
+        // mousemove events after touchend, which was racing toggleChrome.
+        if (e.pointerType === 'mouse') pokeChrome()
+      }}
       className="relative h-[100svh] w-full overflow-hidden bg-black text-neutral-300 select-none [--chrome-ease:cubic-bezier(0.22,1,0.36,1)]"
       style={{ cursor: chromeVisible ? 'default' : 'none' }}
     >
