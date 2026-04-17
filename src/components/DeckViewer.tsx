@@ -31,7 +31,20 @@ export function DeckViewer({ slug }: { slug: string }) {
     up: string
     tap: string
     toggles: number
-  }>({ down: '—', up: '—', tap: '—', toggles: 0 })
+    pokes: number
+    mm: number
+    pmMouse: number
+    pmTouch: number
+  }>({
+    down: '—',
+    up: '—',
+    tap: '—',
+    toggles: 0,
+    pokes: 0,
+    mm: 0,
+    pmMouse: 0,
+    pmTouch: 0,
+  })
 
   const rootRef = useRef<HTMLDivElement>(null)
   const idleTimer = useRef<number | null>(null)
@@ -147,6 +160,7 @@ export function DeckViewer({ slug }: { slug: string }) {
 
   // ── Auto-hide chrome ──────────────────────────────────────────────
   const pokeChrome = useCallback(() => {
+    setDebug((d) => ({ ...d, pokes: d.pokes + 1 }))
     setChromeVisible(true)
     if (idleTimer.current) window.clearTimeout(idleTimer.current)
     idleTimer.current = window.setTimeout(
@@ -249,10 +263,16 @@ export function DeckViewer({ slug }: { slug: string }) {
   return (
     <div
       ref={rootRef}
+      onMouseMove={() => {
+        setDebug((d) => ({ ...d, mm: d.mm + 1 }))
+        pokeChrome()
+      }}
       onPointerMove={(e) => {
-        // Only wake chrome on real mouse movement. Android fires compat
-        // mousemove events after touchend, which was racing toggleChrome.
-        if (e.pointerType === 'mouse') pokeChrome()
+        setDebug((d) =>
+          e.pointerType === 'mouse'
+            ? { ...d, pmMouse: d.pmMouse + 1 }
+            : { ...d, pmTouch: d.pmTouch + 1 },
+        )
       }}
       className="relative h-[100svh] w-full overflow-hidden bg-black text-neutral-300 select-none [--chrome-ease:cubic-bezier(0.22,1,0.36,1)]"
       style={{ cursor: chromeVisible ? 'default' : 'none' }}
@@ -481,7 +501,14 @@ export function DeckViewer({ slug }: { slug: string }) {
         <div>up: {debug.up}</div>
         <div>tap: {debug.tap}</div>
         <div>
-          toggles: {debug.toggles} · chromeVisible:{' '}
+          toggles: {debug.toggles} · pokes: {debug.pokes}
+        </div>
+        <div>
+          mm: {debug.mm} · pm-mouse: {debug.pmMouse} · pm-touch:{' '}
+          {debug.pmTouch}
+        </div>
+        <div>
+          chromeVisible:{' '}
           <span className={chromeVisible ? 'text-lime-200' : 'text-red-300'}>
             {String(chromeVisible)}
           </span>
