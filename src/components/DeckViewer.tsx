@@ -51,6 +51,9 @@ export function DeckViewer({ slug }: { slug: string }) {
   const rootRef = useRef<HTMLDivElement>(null)
   const idleTimer = useRef<number | null>(null)
   const tapStart = useRef<{ x: number; y: number; t: number; id: number } | null>(null)
+  // True when the user explicitly hid the chrome via a tap/click.
+  // Locks out auto-wake (mouse-move pokes) until the user taps again.
+  const userImmersive = useRef(false)
 
   // ── Fetch manifest ────────────────────────────────────────────────
   useEffect(() => {
@@ -172,6 +175,9 @@ export function DeckViewer({ slug }: { slug: string }) {
 
   // ── Auto-hide chrome ──────────────────────────────────────────────
   const pokeChrome = useCallback(() => {
+    // If the user explicitly requested immersive mode (tapped to hide),
+    // honor that and ignore auto-wake signals from mouse/trackpad.
+    if (userImmersive.current) return
     setDebug((d) => ({ ...d, pokes: d.pokes + 1 }))
     setChromeVisible(true)
     if (idleTimer.current) window.clearTimeout(idleTimer.current)
@@ -186,6 +192,8 @@ export function DeckViewer({ slug }: { slug: string }) {
     setChromeVisible((v) => {
       if (idleTimer.current) window.clearTimeout(idleTimer.current)
       const nextVisible = !v
+      // Tap to hide → enter immersive. Tap to show → exit immersive.
+      userImmersive.current = !nextVisible
       if (nextVisible) {
         idleTimer.current = window.setTimeout(
           () => setChromeVisible(false),
@@ -530,6 +538,12 @@ export function DeckViewer({ slug }: { slug: string }) {
           </span>
         </div>
         <div>flip: {debug.lastFlip}</div>
+        <div>
+          immersive:{' '}
+          <span className={userImmersive.current ? 'text-amber-300' : 'text-neutral-400'}>
+            {String(userImmersive.current)}
+          </span>
+        </div>
       </div>
 
       {/* Corner keyboard hint (desktop, fades out with chrome) */}
