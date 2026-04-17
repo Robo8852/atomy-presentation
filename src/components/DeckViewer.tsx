@@ -29,6 +29,10 @@ export function DeckViewer({ slug }: { slug: string }) {
 
   const rootRef = useRef<HTMLDivElement>(null)
   const idleTimer = useRef<number | null>(null)
+  const tapStart = useRef<{ x: number; y: number; t: number; id: number } | null>(null)
+  // True when the user explicitly hid the chrome via a tap/click.
+  // Locks out auto-wake (mouse-move pokes) until the user taps again.
+  const userImmersive = useRef(false)
 
   // ── Fetch manifest ────────────────────────────────────────────────
   useEffect(() => {
@@ -140,6 +144,9 @@ export function DeckViewer({ slug }: { slug: string }) {
 
   // ── Auto-hide chrome ──────────────────────────────────────────────
   const pokeChrome = useCallback(() => {
+    // If the user explicitly requested immersive mode (tapped to hide),
+    // honor that and ignore auto-wake signals from mouse/trackpad.
+    if (userImmersive.current) return
     setChromeVisible(true)
     if (idleTimer.current) window.clearTimeout(idleTimer.current)
     idleTimer.current = window.setTimeout(
@@ -148,12 +155,42 @@ export function DeckViewer({ slug }: { slug: string }) {
     )
   }, [])
 
+  const toggleChrome = useCallback(() => {
+    setChromeVisible((v) => {
+      if (idleTimer.current) window.clearTimeout(idleTimer.current)
+      const nextVisible = !v
+      // Tap to hide → enter immersive. Tap to show → exit immersive.
+      userImmersive.current = !nextVisible
+      if (nextVisible) {
+        idleTimer.current = window.setTimeout(
+          () => setChromeVisible(false),
+          CONTROLS_IDLE_MS,
+        )
+      }
+      return nextVisible
+    })
+  }, [])
+
+  // Initial mount: show chrome, then idle-hide.
   useEffect(() => {
     pokeChrome()
     return () => {
       if (idleTimer.current) window.clearTimeout(idleTimer.current)
     }
-  }, [pokeChrome, current])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // On slide change: refresh idle timer only if chrome is already visible.
+  // If user hid chrome with a tap, swiping keeps it hidden (immersive mode).
+  useEffect(() => {
+    if (!chromeVisible) return
+    if (idleTimer.current) window.clearTimeout(idleTimer.current)
+    idleTimer.current = window.setTimeout(
+      () => setChromeVisible(false),
+      CONTROLS_IDLE_MS,
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current])
 
   // ── Drag handler ──────────────────────────────────────────────────
   const handleDragEnd = (
@@ -167,6 +204,27 @@ export function DeckViewer({ slug }: { slug: string }) {
     }
   }
 
+  // ── Manual tap detection (Framer Motion's drag="x" suppresses native
+  // click after >3px of finger movement, and onTap is flaky on Android.
+  // A 10px / 500ms window treats real taps as taps even with finger jitter.)
+  const handlePointerDown = (e: React.PointerEvent) => {
+    tapStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      t: Date.now(),
+      id: e.pointerId,
+    }
+  }
+  const handlePointerUp = (e: React.PointerEvent) => {
+    const s = tapStart.current
+    if (!s || s.id !== e.pointerId) return
+    tapStart.current = null
+    const dx = Math.abs(e.clientX - s.x)
+    const dy = Math.abs(e.clientY - s.y)
+    const dt = Date.now() - s.t
+    if (dx < 10 && dy < 10 && dt < 500) toggleChrome()
+  }
+
   // ── Render ────────────────────────────────────────────────────────
   const title = manifest?.name ?? '···'
   const counterCurrent = total > 0 ? String(current + 1).padStart(2, '0') : '--'
@@ -176,9 +234,11 @@ export function DeckViewer({ slug }: { slug: string }) {
   return (
     <div
       ref={rootRef}
-      onMouseMove={pokeChrome}
-      onTouchStart={pokeChrome}
-      onClick={pokeChrome}
+      onPointerMove={(e) => {
+        // Only wake chrome on real mouse/trackpad. Touch fires a compat
+        // mousemove on Android that would race with toggleChrome.
+        if (e.pointerType === 'mouse') pokeChrome()
+      }}
       className="relative h-[100svh] w-full overflow-hidden bg-black text-neutral-300 select-none [--chrome-ease:cubic-bezier(0.22,1,0.36,1)]"
       style={{ cursor: chromeVisible ? 'default' : 'none' }}
     >
@@ -212,6 +272,7 @@ export function DeckViewer({ slug }: { slug: string }) {
         style={{
           background:
             'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)',
+          pointerEvents: chromeVisible ? 'auto' : 'none',
         }}
       >
         <div className="flex items-center gap-3 min-w-0">
@@ -302,6 +363,8 @@ export function DeckViewer({ slug }: { slug: string }) {
               dragElastic={0.18}
               dragMomentum={false}
               onDragEnd={handleDragEnd}
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
             >
               <AnimatePresence initial={false} custom={direction} mode="popLayout">
                 <motion.div
@@ -328,22 +391,20 @@ export function DeckViewer({ slug }: { slug: string }) {
                     opacity: { duration: 0.32, ease: [0.22, 1, 0.36, 1] },
                     scale: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
                   }}
-                  className="absolute inset-0 grid place-items-center p-2 sm:p-6"
+                  className="absolute inset-0 p-2 sm:p-6"
                 >
-                  <figure className="relative flex h-full w-full items-center justify-center">
-                    {!loadedMap[current] && (
-                      <div className="absolute inset-4 animate-pulse rounded-md bg-neutral-900/40" />
-                    )}
-                    <img
-                      src={slides[current]}
-                      alt={`${title} — slide ${current + 1} of ${total}`}
-                      draggable={false}
-                      onLoad={() =>
-                        setLoadedMap((m) => ({ ...m, [current]: true }))
-                      }
-                      className="block max-h-full max-w-full rounded-[2px] object-contain shadow-[0_60px_120px_-40px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.04)]"
-                    />
-                  </figure>
+                  {!loadedMap[current] && (
+                    <div className="absolute inset-4 animate-pulse rounded-md bg-neutral-900/40" />
+                  )}
+                  <img
+                    src={slides[current]}
+                    alt={`${title} — slide ${current + 1} of ${total}`}
+                    draggable={false}
+                    onLoad={() =>
+                      setLoadedMap((m) => ({ ...m, [current]: true }))
+                    }
+                    className="relative block h-full w-full rounded-[2px] object-contain shadow-[0_60px_120px_-40px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.04)]"
+                  />
                 </motion.div>
               </AnimatePresence>
             </motion.div>
@@ -372,6 +433,7 @@ export function DeckViewer({ slug }: { slug: string }) {
         style={{
           background:
             'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)',
+          pointerEvents: chromeVisible ? 'auto' : 'none',
         }}
       >
         {slides.map((_, i) => {
