@@ -276,15 +276,17 @@ export function DeckViewer({ slug }: { slug: string }) {
     <div
       ref={rootRef}
       onMouseMove={() => {
+        // Diagnostic only — compat mousemove fires on touch taps on Android.
+        // Do NOT pokeChrome here or it fights with toggleChrome.
         setDebug((d) => ({ ...d, mm: d.mm + 1 }))
-        pokeChrome()
       }}
       onPointerMove={(e) => {
-        setDebug((d) =>
-          e.pointerType === 'mouse'
-            ? { ...d, pmMouse: d.pmMouse + 1 }
-            : { ...d, pmTouch: d.pmTouch + 1 },
-        )
+        if (e.pointerType === 'mouse') {
+          setDebug((d) => ({ ...d, pmMouse: d.pmMouse + 1 }))
+          pokeChrome()
+        } else {
+          setDebug((d) => ({ ...d, pmTouch: d.pmTouch + 1 }))
+        }
       }}
       className="relative h-[100svh] w-full overflow-hidden bg-black text-neutral-300 select-none [--chrome-ease:cubic-bezier(0.22,1,0.36,1)]"
       style={{ cursor: chromeVisible ? 'default' : 'none' }}
