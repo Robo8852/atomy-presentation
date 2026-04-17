@@ -35,6 +35,7 @@ export function DeckViewer({ slug }: { slug: string }) {
     mm: number
     pmMouse: number
     pmTouch: number
+    lastFlip: string
   }>({
     down: '—',
     up: '—',
@@ -44,6 +45,7 @@ export function DeckViewer({ slug }: { slug: string }) {
     mm: 0,
     pmMouse: 0,
     pmTouch: 0,
+    lastFlip: '—',
   })
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -157,6 +159,16 @@ export function DeckViewer({ slug }: { slug: string }) {
       document.removeEventListener('webkitfullscreenchange', sync)
     }
   }, [])
+
+  // Track every chromeVisible flip with a timestamp for the HUD.
+  useEffect(() => {
+    const stamp = new Date().toLocaleTimeString(undefined, { hour12: false }) +
+      '.' + String(Date.now() % 1000).padStart(3, '0')
+    setDebug((d) => ({
+      ...d,
+      lastFlip: `${stamp} → ${String(chromeVisible)}`,
+    }))
+  }, [chromeVisible])
 
   // ── Auto-hide chrome ──────────────────────────────────────────────
   const pokeChrome = useCallback(() => {
@@ -307,6 +319,7 @@ export function DeckViewer({ slug }: { slug: string }) {
         style={{
           background:
             'linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)',
+          pointerEvents: chromeVisible ? 'auto' : 'none',
         }}
       >
         <div className="flex items-center gap-3 min-w-0">
@@ -467,6 +480,7 @@ export function DeckViewer({ slug }: { slug: string }) {
         style={{
           background:
             'linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 100%)',
+          pointerEvents: chromeVisible ? 'auto' : 'none',
         }}
       >
         {slides.map((_, i) => {
@@ -513,6 +527,7 @@ export function DeckViewer({ slug }: { slug: string }) {
             {String(chromeVisible)}
           </span>
         </div>
+        <div>flip: {debug.lastFlip}</div>
       </div>
 
       {/* Corner keyboard hint (desktop, fades out with chrome) */}
