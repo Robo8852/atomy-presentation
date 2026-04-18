@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Star } from 'lucide-react'
+import { useFavorites } from '@/hooks/useFavorites'
+import { cn } from '@/lib/utils'
 
 type CatalogEntry = { slug: string; name: string; kind?: string }
 
 export function DeckList() {
   const [entries, setEntries] = useState<CatalogEntry[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const { isFavorite, toggle } = useFavorites()
 
   useEffect(() => {
     const ac = new AbortController()
@@ -97,7 +101,13 @@ export function DeckList() {
         {!error && entries && entries.length > 0 && (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {entries.map((entry, i) => (
-              <DeckCard key={entry.slug} entry={entry} index={i} />
+              <DeckCard
+                key={entry.slug}
+                entry={entry}
+                index={i}
+                favorited={isFavorite(entry.slug)}
+                onToggleFavorite={() => toggle(entry.slug)}
+              />
             ))}
           </ul>
         )}
@@ -106,10 +116,21 @@ export function DeckList() {
   )
 }
 
-function DeckCard({ entry, index }: { entry: CatalogEntry; index: number }) {
+function DeckCard({
+  entry,
+  index,
+  favorited,
+  onToggleFavorite,
+}: {
+  entry: CatalogEntry
+  index: number
+  favorited: boolean
+  onToggleFavorite: () => void
+}) {
   const [loaded, setLoaded] = useState(false)
   return (
     <motion.li
+      layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -118,50 +139,73 @@ function DeckCard({ entry, index }: { entry: CatalogEntry; index: number }) {
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      <Link
-        to={`/decks/${entry.slug}`}
-        className="group relative block overflow-hidden rounded-md border border-neutral-900 bg-neutral-950/60 transition-colors hover:border-neutral-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
-      >
-        <div className="relative aspect-[4/3] overflow-hidden bg-neutral-900/40">
-          {!loaded && (
-            <div className="absolute inset-0 animate-pulse bg-neutral-900/50" />
-          )}
-          <img
-            src={`/decks/${entry.slug}/slide-1.jpg`}
-            alt=""
-            draggable={false}
-            loading="lazy"
-            onLoad={() => setLoaded(true)}
-            className="relative block h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 55%)',
-            }}
-          />
-        </div>
-        <div className="flex items-center justify-between gap-3 px-4 py-3">
-          <div className="min-w-0">
-            <div className="truncate text-sm font-medium text-neutral-100">
-              {entry.name}
-            </div>
-            {entry.kind && (
-              <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600">
-                {entry.kind}
-              </div>
+      <div className="group relative block overflow-hidden rounded-md border border-neutral-900 bg-neutral-950/60 transition-colors hover:border-neutral-700">
+        <Link
+          to={`/decks/${entry.slug}`}
+          className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
+        >
+          <div className="relative aspect-[4/3] overflow-hidden bg-neutral-900/40">
+            {!loaded && (
+              <div className="absolute inset-0 animate-pulse bg-neutral-900/50" />
             )}
+            <img
+              src={`/decks/${entry.slug}/slide-1.jpg`}
+              alt=""
+              draggable={false}
+              loading="lazy"
+              onLoad={() => setLoaded(true)}
+              className="relative block h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 55%)',
+              }}
+            />
           </div>
-          <span
-            aria-hidden
-            className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600 transition-colors group-hover:text-neutral-300"
-          >
-            Open →
-          </span>
-        </div>
-      </Link>
+          <div className="flex items-center justify-between gap-3 px-4 py-3">
+            <div className="min-w-0">
+              <div className="truncate text-sm font-medium text-neutral-100">
+                {entry.name}
+              </div>
+              {entry.kind && (
+                <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600">
+                  {entry.kind}
+                </div>
+              )}
+            </div>
+            <span
+              aria-hidden
+              className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600 transition-colors group-hover:text-neutral-300"
+            >
+              Open →
+            </span>
+          </div>
+        </Link>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            onToggleFavorite()
+          }}
+          aria-label={favorited ? 'Quitar de favoritos' : 'Marcar como favorito'}
+          aria-pressed={favorited}
+          className="absolute top-1 right-1 flex h-11 w-11 items-center justify-center rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <Star
+            className={cn(
+              'h-5 w-5 transition-colors',
+              favorited
+                ? 'fill-primary text-primary'
+                : 'fill-transparent text-muted-foreground',
+            )}
+            strokeWidth={1.75}
+          />
+        </button>
+      </div>
     </motion.li>
   )
 }
