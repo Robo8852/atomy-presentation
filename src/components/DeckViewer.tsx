@@ -11,7 +11,6 @@ type FullscreenElement = HTMLElement & {
 type FullscreenDocument = Document & {
   webkitFullscreenElement?: Element | null
   webkitExitFullscreen?: () => Promise<void> | void
-  webkitFullscreenEnabled?: boolean
 }
 
 const SWIPE_POWER = (offset: number, velocity: number) =>
@@ -31,7 +30,6 @@ export function DeckViewer({
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState<1 | -1>(1)
   const [isFullscreen, setIsFullscreen] = useState(false)
-  const [fullscreenSupported, setFullscreenSupported] = useState(false)
   const [chromeVisible, setChromeVisible] = useState(true)
   const [loadedMap, setLoadedMap] = useState<Record<number, boolean>>({})
 
@@ -137,9 +135,6 @@ export function DeckViewer({
 
   useEffect(() => {
     const doc = document as FullscreenDocument
-    setFullscreenSupported(
-      Boolean(doc.fullscreenEnabled || doc.webkitFullscreenEnabled),
-    )
     const sync = () => {
       setIsFullscreen(
         Boolean(doc.fullscreenElement || doc.webkitFullscreenElement),
@@ -317,20 +312,18 @@ export function DeckViewer({
             <span className="mx-1.5 text-neutral-600">/</span>
             <span>{counterTotal}</span>
           </div>
-          {fullscreenSupported && (
-            <button
-              type="button"
-              onClick={toggleFullscreen}
-              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-              className="group relative grid h-11 w-11 place-items-center rounded-full border border-neutral-800 bg-neutral-900/40 text-neutral-300 backdrop-blur-sm transition hover:border-neutral-600 hover:bg-neutral-900 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
-            >
-              {isFullscreen ? (
-                <Minimize2 className="h-4 w-4" />
-              ) : (
-                <Maximize2 className="h-4 w-4" />
-              )}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            className="group relative grid h-11 w-11 place-items-center rounded-full border border-neutral-800 bg-neutral-900/40 text-neutral-300 backdrop-blur-sm transition hover:border-neutral-600 hover:bg-neutral-900 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
+          >
+            {isFullscreen ? (
+              <Minimize2 className="h-4 w-4" />
+            ) : (
+              <Maximize2 className="h-4 w-4" />
+            )}
+          </button>
         </div>
       </motion.header>
 
