@@ -1,29 +1,61 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Star } from 'lucide-react'
+import { Search, Star, X } from 'lucide-react'
+import Fuse from 'fuse.js'
+import { Input } from '@/components/ui/input'
 import { useFavorites } from '@/hooks/useFavorites'
 import { cn } from '@/lib/utils'
+
+const norm = (s: string) =>
+  s.normalize('NFKD').replace(/\p{Mn}/gu, '').toLowerCase()
 
 type CatalogEntry = { slug: string; name: string; kind?: string }
 
 export function DeckList() {
   const [entries, setEntries] = useState<CatalogEntry[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
   const { favorites, isFavorite, toggle } = useFavorites()
 
-  const orderedEntries = useMemo(() => {
+  const searchable = useMemo(
+    () => (entries ?? []).map((d) => ({ ...d, _search: norm(d.name) })),
+    [entries],
+  )
+
+  const fuse = useMemo(
+    () =>
+      new Fuse(searchable, {
+        keys: ['_search'],
+        threshold: 0.35,
+        ignoreLocation: true,
+      }),
+    [searchable],
+  )
+
+  const filteredEntries = useMemo<CatalogEntry[] | null>(() => {
     if (!entries) return null
+    const q = query.trim()
+    if (q === '') return entries
+    return fuse.search(norm(q)).map((r) => {
+      const { _search: _unused, ...rest } = r.item
+      void _unused
+      return rest as CatalogEntry
+    })
+  }, [entries, query, fuse])
+
+  const orderedEntries = useMemo(() => {
+    if (!filteredEntries) return null
     const presentacion: CatalogEntry[] = []
     const favorited: CatalogEntry[] = []
     const rest: CatalogEntry[] = []
-    for (const e of entries) {
+    for (const e of filteredEntries) {
       if (e.slug === 'presentacion-de-productos') presentacion.push(e)
       else if (favorites.has(e.slug)) favorited.push(e)
       else rest.push(e)
     }
     return [...presentacion, ...favorited, ...rest]
-  }, [entries, favorites])
+  }, [filteredEntries, favorites])
 
   useEffect(() => {
     const ac = new AbortController()
@@ -84,6 +116,36 @@ export function DeckList() {
         </p>
       </header>
 
+      <div className="sticky top-0 z-20 backdrop-blur bg-background/80 supports-[backdrop-filter]:bg-background/60">
+        <div className="relative px-5 py-3 sm:px-10">
+          <label className="relative block">
+            <span className="sr-only">Buscar deck</span>
+            <Search
+              aria-hidden
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            />
+            <Input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar deck..."
+              autoComplete="off"
+              className="h-11 pl-9 pr-12 text-base"
+            />
+            {query !== '' && (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                aria-label="Borrar búsqueda"
+                className="absolute top-1/2 right-0 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </label>
+        </div>
+      </div>
+
       <main className="relative z-10 px-5 pb-16 sm:px-10 sm:pb-24">
         {error && (
           <div className="rounded-md border border-red-900/50 bg-red-950/30 px-4 py-3 font-mono text-xs text-red-400/80">
@@ -110,6 +172,16 @@ export function DeckList() {
             No decks in catalog.
           </div>
         )}
+
+        {!error &&
+          entries &&
+          entries.length > 0 &&
+          orderedEntries &&
+          orderedEntries.length === 0 && (
+            <p className="text-sm text-neutral-500">
+              Sin resultados para &ldquo;{query.trim()}&rdquo;
+            </p>
+          )}
 
         {!error && orderedEntries && orderedEntries.length > 0 && (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
