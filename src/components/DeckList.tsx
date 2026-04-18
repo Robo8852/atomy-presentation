@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Star } from 'lucide-react'
 import { useFavorites } from '@/hooks/useFavorites'
 import { cn } from '@/lib/utils'
@@ -10,7 +10,20 @@ type CatalogEntry = { slug: string; name: string; kind?: string }
 export function DeckList() {
   const [entries, setEntries] = useState<CatalogEntry[] | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const { isFavorite, toggle } = useFavorites()
+  const { favorites, isFavorite, toggle } = useFavorites()
+
+  const orderedEntries = useMemo(() => {
+    if (!entries) return null
+    const presentacion: CatalogEntry[] = []
+    const favorited: CatalogEntry[] = []
+    const rest: CatalogEntry[] = []
+    for (const e of entries) {
+      if (e.slug === 'presentacion-de-productos') presentacion.push(e)
+      else if (favorites.has(e.slug)) favorited.push(e)
+      else rest.push(e)
+    }
+    return [...presentacion, ...favorited, ...rest]
+  }, [entries, favorites])
 
   useEffect(() => {
     const ac = new AbortController()
@@ -98,17 +111,19 @@ export function DeckList() {
           </div>
         )}
 
-        {!error && entries && entries.length > 0 && (
+        {!error && orderedEntries && orderedEntries.length > 0 && (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {entries.map((entry, i) => (
-              <DeckCard
-                key={entry.slug}
-                entry={entry}
-                index={i}
-                favorited={isFavorite(entry.slug)}
-                onToggleFavorite={() => toggle(entry.slug)}
-              />
-            ))}
+            <AnimatePresence initial={false}>
+              {orderedEntries.map((entry, i) => (
+                <DeckCard
+                  key={entry.slug}
+                  entry={entry}
+                  index={i}
+                  favorited={isFavorite(entry.slug)}
+                  onToggleFavorite={() => toggle(entry.slug)}
+                />
+              ))}
+            </AnimatePresence>
           </ul>
         )}
       </main>
