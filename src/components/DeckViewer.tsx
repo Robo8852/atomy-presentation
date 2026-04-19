@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
 import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react'
+import { useIOSImmersive } from '../hooks/useIOSImmersive'
 
 type Manifest = { name: string; slideCount: number }
 
@@ -32,6 +33,8 @@ export function DeckViewer({
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [chromeVisible, setChromeVisible] = useState(true)
   const [loadedMap, setLoadedMap] = useState<Record<number, boolean>>({})
+
+  const { isIOS, immersiveActive } = useIOSImmersive()
 
   const rootRef = useRef<HTMLDivElement>(null)
   const idleTimer = useRef<number | null>(null)
@@ -147,6 +150,22 @@ export function DeckViewer({
       document.removeEventListener('webkitfullscreenchange', sync)
     }
   }, [])
+
+  // ── iOS orientation-driven immersive ──────────────────────────────
+  // Rotation wins over the user's prior tap state: landscape locks
+  // chrome hidden (userImmersive=true blocks auto-wake); portrait
+  // restores chrome.
+  useEffect(() => {
+    if (!isIOS) return
+    if (idleTimer.current) window.clearTimeout(idleTimer.current)
+    if (immersiveActive) {
+      userImmersive.current = true
+      setChromeVisible(false)
+    } else {
+      userImmersive.current = false
+      setChromeVisible(true)
+    }
+  }, [isIOS, immersiveActive])
 
   // ── Auto-hide chrome ──────────────────────────────────────────────
   const pokeChrome = useCallback(() => {
@@ -312,18 +331,20 @@ export function DeckViewer({
             <span className="mx-1.5 text-neutral-600">/</span>
             <span>{counterTotal}</span>
           </div>
-          <button
-            type="button"
-            onClick={toggleFullscreen}
-            aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-            className="group relative grid h-11 w-11 place-items-center rounded-full border border-neutral-800 bg-neutral-900/40 text-neutral-300 backdrop-blur-sm transition hover:border-neutral-600 hover:bg-neutral-900 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
-          >
-            {isFullscreen ? (
-              <Minimize2 className="h-4 w-4" />
-            ) : (
-              <Maximize2 className="h-4 w-4" />
-            )}
-          </button>
+          {!isIOS && (
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              className="group relative grid h-11 w-11 place-items-center rounded-full border border-neutral-800 bg-neutral-900/40 text-neutral-300 backdrop-blur-sm transition hover:border-neutral-600 hover:bg-neutral-900 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
+            >
+              {isFullscreen ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
+            </button>
+          )}
         </div>
       </motion.header>
 
