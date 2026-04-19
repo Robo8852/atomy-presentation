@@ -54,6 +54,70 @@ CONSUMABLES_ORDER = [
     "Crema No Lactea NE",
 ]
 
+# Category per detail-deck slug. The combined DECK_SLUG is intentionally absent
+# (category=None in catalog — always surfaces regardless of filter).
+# Labels are both UI strings and enum values — do not paraphrase.
+CATEGORIES: dict[str, str] = {
+    "absolute-cuidado-del-cabello": "Cuidado del Cabello",
+    "adelica-delineador-de-cejas": "Maquillaje",
+    "adelica-mascara-de-pestanas-volumen": "Maquillaje",
+    "atomy-absolute": "Cuidado de la Piel",
+    "atomy-aceite-esencial-para-cabello-ne": "Cuidado del Cabello",
+    "atomy-aidam-limpiador": "Higiene Personal",
+    "atomy-bb-cream": "Maquillaje",
+    "atomy-brillo-labial": "Maquillaje",
+    "atomy-cafe-arabica-black": "Consumibles",
+    "atomy-cepillo-dental-ninos": "Higiene Personal",
+    "atomy-cream-mist": "Cuidado de la Piel",
+    "atomy-cuidado-nocturno-4-pasos": "Cuidado de la Piel",
+    "atomy-daily-expert-mask": "Cuidado de la Piel",
+    "atomy-desmaquillante-bifasico": "Cuidado de la Piel",
+    "atomy-e-omega-3": "Consumibles",
+    "atomy-esencia-para-rizos": "Cuidado del Cabello",
+    "atomy-fermento-de-noni-organico": "Consumibles",
+    "atomy-fermento-de-noni-organico-sachet": "Consumibles",
+    "atomy-gel-de-manzana-verde": "Consumibles",
+    "atomy-hierro": "Consumibles",
+    "atomy-homme-all-in-one-wash": "Higiene Personal",
+    "atomy-jabon-de-manos": "Higiene Personal",
+    "atomy-kit-de-viaje": "Higiene Personal",
+    "atomy-limpiador-herbal": "Higiene Personal",
+    "atomy-parche-de-hidrogel": "Cuidado de la Piel",
+    "atomy-pasta-dental": "Higiene Personal",
+    "atomy-pasta-dental-sensitive": "Higiene Personal",
+    "atomy-probioticos-10": "Consumibles",
+    "atomy-protector-solar-barra": "Cuidado de la Piel",
+    "atomy-protector-solar-ne": "Cuidado de la Piel",
+    "atomy-sistema-de-cuidado-para-la-piel-the-fame": "Cuidado de la Piel",
+    "atomy-spray-de-propoleo-verde": "Consumibles",
+    "atomy-suavizante-de-telas-ne": "Hogar",
+    "atomy-terapia-de-manos-ne": "Cuidado de la Piel",
+    "atomy-tratamiento-labial-ne": "Cuidado de la Piel",
+    "balsamo-para-manos": "Cuidado de la Piel",
+    "crema-no-lactea-ne": "Consumibles",
+    "detergente-para-ropa-ne": "Hogar",
+    "editable-sistemacuidadobucal2": "Higiene Personal",
+    "editable-tratamientoliquido": "Cuidado del Cabello",
+    "espanol-ppt-protein-intensive-haircare-editable": "Cuidado del Cabello",
+    "fibra-imagenes": "Consumibles",
+    "fresh-sun-lotion": "Cuidado de la Piel",
+    "gel-de-granada-ne": "Cuidado de la Piel",
+    "gomitas-de-propoleo-ne": "Consumibles",
+    "guantes-de-latex-final": "Hogar",
+    "hemohim": "Consumibles",
+    "herbal-cabello-ne": "Cuidado del Cabello",
+    "hydra-balm-ne": "Cuidado de la Piel",
+    "lavatrastes-ne": "Hogar",
+    "limpiador-profundo-aceite-editable": "Cuidado de la Piel",
+    "ppt-absolute-essence-sun-uv-ne": "Cuidado de la Piel",
+    "ppt-esponjillas-de-acero-ineoxidable-ne": "Hogar",
+    "ppt-esponjillas-multiproposito-ne": "Hogar",
+    "ppt-exfoliante-corporal-a-base-de-sales": "Higiene Personal",
+    "puer-te": "Consumibles",
+    "scalpcare-ne": "Cuidado del Cabello",
+    "spirulina": "Consumibles",
+}
+
 
 def pptx_to_pdf(pptx: Path, work_dir: Path, tag: str) -> Path:
     profile = work_dir / f"soffice_profile_{tag}"
@@ -150,9 +214,16 @@ def main() -> int:
         if not manifest.exists():
             continue
         data = json.loads(manifest.read_text())
-        product_entries.append({"slug": data["slug"], "name": data["name"]})
+        slug = data["slug"]
+        if slug not in CATEGORIES:
+            raise SystemExit(f"Slug '{slug}' missing from CATEGORIES dict")
+        product_entries.append({
+            "slug": slug,
+            "name": data["name"],
+            "category": CATEGORIES[slug],
+        })
     product_entries.sort(key=lambda e: e["name"].lower())
-    new_catalog = [{"slug": DECK_SLUG, "name": DECK_NAME}] + product_entries
+    new_catalog = [{"slug": DECK_SLUG, "name": DECK_NAME, "category": None}] + product_entries
     catalog_path.write_text(json.dumps(new_catalog, ensure_ascii=False, indent=2) + "\n")
     print(f"catalog.json: {len(new_catalog)} entries (combined deck first)")
     return 0

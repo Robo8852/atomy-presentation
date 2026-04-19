@@ -1,238 +1,297 @@
 [
   {
     "slug": "presentacion-de-productos",
-    "name": "Presentación de Productos"
+    "name": "Presentación de Productos",
+    "category": null
   },
   {
     "slug": "absolute-cuidado-del-cabello",
-    "name": "Absolute Cuidado del Cabello"
+    "name": "Absolute Cuidado del Cabello",
+    "category": "Cuidado del Cabello"
   },
   {
     "slug": "adelica-delineador-de-cejas",
-    "name": "Adelica Delineador de Cejas"
+    "name": "Adelica Delineador de Cejas",
+    "category": "Maquillaje"
   },
   {
     "slug": "adelica-mascara-de-pestanas-volumen",
-    "name": "Adelica Máscara de Pestañas Volumen"
+    "name": "Adelica Máscara de Pestañas Volumen",
+    "category": "Maquillaje"
   },
   {
     "slug": "atomy-absolute",
-    "name": "Atomy Absolute"
+    "name": "Atomy Absolute",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-aceite-esencial-para-cabello-ne",
-    "name": "Atomy Aceite Esencial para Cabello NE"
+    "name": "Atomy Aceite Esencial para Cabello NE",
+    "category": "Cuidado del Cabello"
   },
   {
     "slug": "atomy-aidam-limpiador",
-    "name": "Atomy Aidam Limpiador"
+    "name": "Atomy Aidam Limpiador",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-bb-cream",
-    "name": "Atomy BB Cream"
+    "name": "Atomy BB Cream",
+    "category": "Maquillaje"
   },
   {
     "slug": "atomy-brillo-labial",
-    "name": "Atomy Brillo Labial"
+    "name": "Atomy Brillo Labial",
+    "category": "Maquillaje"
   },
   {
     "slug": "atomy-cafe-arabica-black",
-    "name": "Atomy Café Arábica Black"
+    "name": "Atomy Café Arábica Black",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-cepillo-dental-ninos",
-    "name": "Atomy Cepillo Dental Niños"
+    "name": "Atomy Cepillo Dental Niños",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-cream-mist",
-    "name": "Atomy Cream Mist"
+    "name": "Atomy Cream Mist",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-cuidado-nocturno-4-pasos",
-    "name": "Atomy Cuidado Nocturno 4 Pasos"
+    "name": "Atomy Cuidado Nocturno 4 Pasos",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-daily-expert-mask",
-    "name": "Atomy Daily Expert Mask"
+    "name": "Atomy Daily Expert Mask",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-desmaquillante-bifasico",
-    "name": "Atomy Desmaquillante Bifásico"
+    "name": "Atomy Desmaquillante Bifásico",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-e-omega-3",
-    "name": "Atomy E-Omega 3"
+    "name": "Atomy E-Omega 3",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-esencia-para-rizos",
-    "name": "Atomy Esencia para Rizos"
+    "name": "Atomy Esencia para Rizos",
+    "category": "Cuidado del Cabello"
   },
   {
     "slug": "atomy-fermento-de-noni-organico",
-    "name": "Atomy Fermento de Noni Orgánico"
+    "name": "Atomy Fermento de Noni Orgánico",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-fermento-de-noni-organico-sachet",
-    "name": "Atomy Fermento de Noni Orgánico Sachet"
+    "name": "Atomy Fermento de Noni Orgánico Sachet",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-gel-de-manzana-verde",
-    "name": "Atomy Gel de Manzana Verde"
+    "name": "Atomy Gel de Manzana Verde",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-hierro",
-    "name": "Atomy Hierro"
+    "name": "Atomy Hierro",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-homme-all-in-one-wash",
-    "name": "Atomy Homme All In One Wash"
+    "name": "Atomy Homme All In One Wash",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-jabon-de-manos",
-    "name": "Atomy Jabón de Manos"
+    "name": "Atomy Jabón de Manos",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-kit-de-viaje",
-    "name": "Atomy Kit de Viaje"
+    "name": "Atomy Kit de Viaje",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-limpiador-herbal",
-    "name": "Atomy Limpiador Herbal"
+    "name": "Atomy Limpiador Herbal",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-parche-de-hidrogel",
-    "name": "Atomy Parche de Hidrogel"
+    "name": "Atomy Parche de Hidrogel",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-pasta-dental",
-    "name": "Atomy Pasta Dental"
+    "name": "Atomy Pasta Dental",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-pasta-dental-sensitive",
-    "name": "Atomy Pasta Dental Sensitive"
+    "name": "Atomy Pasta Dental Sensitive",
+    "category": "Higiene Personal"
   },
   {
     "slug": "atomy-probioticos-10",
-    "name": "Atomy Probióticos 10_"
+    "name": "Atomy Probióticos 10_",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-protector-solar-barra",
-    "name": "Atomy Protector Solar Barra"
+    "name": "Atomy Protector Solar Barra",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-protector-solar-ne",
-    "name": "Atomy Protector Solar NE"
+    "name": "Atomy Protector Solar NE",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-sistema-de-cuidado-para-la-piel-the-fame",
-    "name": "Atomy Sistema de Cuidado para la Piel The Fame"
+    "name": "Atomy Sistema de Cuidado para la Piel The Fame",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-spray-de-propoleo-verde",
-    "name": "Atomy Spray de Propóleo Verde"
+    "name": "Atomy Spray de Propóleo Verde",
+    "category": "Consumibles"
   },
   {
     "slug": "atomy-suavizante-de-telas-ne",
-    "name": "Atomy Suavizante de Telas NE"
+    "name": "Atomy Suavizante de Telas NE",
+    "category": "Hogar"
   },
   {
     "slug": "atomy-terapia-de-manos-ne",
-    "name": "Atomy Terapia de Manos NE"
+    "name": "Atomy Terapia de Manos NE",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "atomy-tratamiento-labial-ne",
-    "name": "Atomy Tratamiento Labial NE"
+    "name": "Atomy Tratamiento Labial NE",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "balsamo-para-manos",
-    "name": "BALSAMO PARA MANOS"
+    "name": "BALSAMO PARA MANOS",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "crema-no-lactea-ne",
-    "name": "Crema No Lactea NE"
+    "name": "Crema No Lactea NE",
+    "category": "Consumibles"
   },
   {
     "slug": "detergente-para-ropa-ne",
-    "name": "Detergente Para Ropa NE"
+    "name": "Detergente Para Ropa NE",
+    "category": "Hogar"
   },
   {
     "slug": "editable-sistemacuidadobucal2",
-    "name": "Editable_SistemaCuidadoBucal2"
+    "name": "Editable_SistemaCuidadoBucal2",
+    "category": "Higiene Personal"
   },
   {
     "slug": "editable-tratamientoliquido",
-    "name": "Editable_TratamientoLíquido"
+    "name": "Editable_TratamientoLíquido",
+    "category": "Cuidado del Cabello"
   },
   {
     "slug": "espanol-ppt-protein-intensive-haircare-editable",
-    "name": "ESPAÑOL PPT_Protein Intensive Haircare Editable"
+    "name": "ESPAÑOL PPT_Protein Intensive Haircare Editable",
+    "category": "Cuidado del Cabello"
   },
   {
     "slug": "fibra-imagenes",
-    "name": "fibra imagenes"
+    "name": "fibra imagenes",
+    "category": "Consumibles"
   },
   {
     "slug": "fresh-sun-lotion",
-    "name": "Fresh Sun Lotion"
+    "name": "Fresh Sun Lotion",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "gel-de-granada-ne",
-    "name": "Gel de Granada NE"
+    "name": "Gel de Granada NE",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "gomitas-de-propoleo-ne",
-    "name": "Gomitas de Propoleo NE"
+    "name": "Gomitas de Propoleo NE",
+    "category": "Consumibles"
   },
   {
     "slug": "guantes-de-latex-final",
-    "name": "Guantes de latex Final"
+    "name": "Guantes de latex Final",
+    "category": "Hogar"
   },
   {
     "slug": "hemohim",
-    "name": "Hemohim"
+    "name": "Hemohim",
+    "category": "Consumibles"
   },
   {
     "slug": "herbal-cabello-ne",
-    "name": "Herbal Cabello NE"
+    "name": "Herbal Cabello NE",
+    "category": "Cuidado del Cabello"
   },
   {
     "slug": "hydra-balm-ne",
-    "name": "HYDRA BALM NE"
+    "name": "HYDRA BALM NE",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "lavatrastes-ne",
-    "name": "Lavatrastes - NE"
+    "name": "Lavatrastes - NE",
+    "category": "Hogar"
   },
   {
     "slug": "limpiador-profundo-aceite-editable",
-    "name": "Limpiador Profundo Aceite Editable"
+    "name": "Limpiador Profundo Aceite Editable",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "ppt-esponjillas-de-acero-ineoxidable-ne",
-    "name": "PPT Esponjillas de acero ineoxidable NE"
+    "name": "PPT Esponjillas de acero ineoxidable NE",
+    "category": "Hogar"
   },
   {
     "slug": "ppt-esponjillas-multiproposito-ne",
-    "name": "PPT Esponjillas Multiproposito NE"
+    "name": "PPT Esponjillas Multiproposito NE",
+    "category": "Hogar"
   },
   {
     "slug": "ppt-exfoliante-corporal-a-base-de-sales",
-    "name": "PPT Exfoliante corporal a base de sales"
+    "name": "PPT Exfoliante corporal a base de sales",
+    "category": "Higiene Personal"
   },
   {
     "slug": "ppt-absolute-essence-sun-uv-ne",
-    "name": "PPT_Absolute Essence Sun UV. NE"
+    "name": "PPT_Absolute Essence Sun UV. NE",
+    "category": "Cuidado de la Piel"
   },
   {
     "slug": "puer-te",
-    "name": "Puer Te"
+    "name": "Puer Te",
+    "category": "Consumibles"
   },
   {
     "slug": "scalpcare-ne",
-    "name": "ScalpCare NE"
+    "name": "ScalpCare NE",
+    "category": "Cuidado del Cabello"
   },
   {
     "slug": "spirulina",
-    "name": "Spirulina"
+    "name": "Spirulina",
+    "category": "Consumibles"
   }
 ]
