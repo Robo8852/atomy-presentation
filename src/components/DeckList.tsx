@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Search, Star, X } from 'lucide-react'
@@ -10,13 +10,44 @@ import { cn } from '@/lib/utils'
 const norm = (s: string) =>
   s.normalize('NFKD').replace(/\p{Mn}/gu, '').toLowerCase()
 
-type CatalogEntry = { slug: string; name: string; kind?: string }
+const CATEGORIES = [
+  'Consumibles',
+  'Cuidado de la Piel',
+  'Cuidado del Cabello',
+  'Maquillaje',
+  'Higiene Personal',
+  'Hogar',
+] as const
+type Category = (typeof CATEGORIES)[number]
+
+type CatalogEntry = {
+  slug: string
+  name: string
+  kind?: string
+  category?: Category | null
+}
 
 export function DeckList() {
   const [entries, setEntries] = useState<CatalogEntry[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [query, setQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null,
+  )
   const { favorites, isFavorite, toggle } = useFavorites()
+
+  const categoryCounts = useMemo(() => {
+    const counts = Object.fromEntries(CATEGORIES.map((c) => [c, 0])) as Record<
+      Category,
+      number
+    >
+    for (const e of entries ?? []) {
+      if (e.category && (CATEGORIES as readonly string[]).includes(e.category)) {
+        counts[e.category as Category]++
+      }
+    }
+    return counts
+  }, [entries])
 
   const searchable = useMemo(
     () => (entries ?? []).map((d) => ({ ...d, _search: norm(d.name) })),
@@ -44,18 +75,28 @@ export function DeckList() {
     })
   }, [entries, query, fuse])
 
-  const orderedEntries = useMemo(() => {
+  const categoryFilteredEntries = useMemo<CatalogEntry[] | null>(() => {
     if (!filteredEntries) return null
+    if (selectedCategory === null) return filteredEntries
+    return filteredEntries.filter(
+      (e) =>
+        e.slug === 'presentacion-de-productos' ||
+        e.category === selectedCategory,
+    )
+  }, [filteredEntries, selectedCategory])
+
+  const orderedEntries = useMemo(() => {
+    if (!categoryFilteredEntries) return null
     const presentacion: CatalogEntry[] = []
     const favorited: CatalogEntry[] = []
     const rest: CatalogEntry[] = []
-    for (const e of filteredEntries) {
+    for (const e of categoryFilteredEntries) {
       if (e.slug === 'presentacion-de-productos') presentacion.push(e)
       else if (favorites.has(e.slug)) favorited.push(e)
       else rest.push(e)
     }
     return [...presentacion, ...favorited, ...rest]
-  }, [filteredEntries, favorites])
+  }, [categoryFilteredEntries, favorites])
 
   useEffect(() => {
     const ac = new AbortController()
@@ -117,7 +158,7 @@ export function DeckList() {
       </header>
 
       <div className="sticky top-0 z-20 backdrop-blur bg-background/80 supports-[backdrop-filter]:bg-background/60">
-        <div className="relative px-5 py-3 sm:px-10">
+        <div className="relative px-5 pt-3 sm:px-10">
           <label className="relative block">
             <span className="sr-only">Buscar deck</span>
             <Search
@@ -143,6 +184,31 @@ export function DeckList() {
               </button>
             )}
           </label>
+        </div>
+        <div className="overflow-x-auto px-5 py-3 sm:px-10">
+          <div
+            role="tablist"
+            aria-label="Filtrar por categoría"
+            className="flex snap-x gap-2"
+          >
+            <CategoryChip
+              selected={selectedCategory === null}
+              onClick={() => setSelectedCategory(null)}
+            >
+              Todos
+            </CategoryChip>
+            {CATEGORIES.map((c) => (
+              <CategoryChip
+                key={c}
+                selected={selectedCategory === c}
+                onClick={() =>
+                  setSelectedCategory((prev) => (prev === c ? null : c))
+                }
+              >
+                {c} ({categoryCounts[c]})
+              </CategoryChip>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -294,6 +360,33 @@ function DeckCard({
         </button>
       </div>
     </motion.li>
+  )
+}
+
+function CategoryChip({
+  selected,
+  onClick,
+  children,
+}: {
+  selected: boolean
+  onClick: () => void
+  children: ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={selected}
+      onClick={onClick}
+      className={cn(
+        'inline-flex h-11 shrink-0 snap-start items-center rounded-full px-4 text-sm whitespace-nowrap transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+        selected
+          ? 'bg-primary text-primary-foreground'
+          : 'border border-border bg-transparent text-foreground hover:bg-muted',
+      )}
+    >
+      {children}
+    </button>
   )
 }
 
