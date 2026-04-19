@@ -115,45 +115,37 @@ export function DeckList() {
   const count = entries?.length ?? 0
 
   return (
-    <div className="relative min-h-[100svh] w-full bg-black text-neutral-300 select-none">
-      {/* grain + vignette atmosphere (same language as DeckViewer) */}
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 opacity-[0.045] mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>\")",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0"
-        style={{
-          background:
-            'radial-gradient(120% 80% at 50% 30%, transparent 55%, rgba(0,0,0,0.65) 100%)',
-        }}
-      />
-
-      <header className="relative z-10 flex flex-col gap-2 px-5 pt-8 pb-6 sm:px-10 sm:pt-12 sm:pb-10">
-        <div className="flex items-center gap-3">
-          <span
-            aria-hidden
-            className="inline-block h-[9px] w-[9px] rounded-full bg-red-500/90 shadow-[0_0_18px_rgba(239,68,68,0.65)]"
+    <div className="relative min-h-[100svh] w-full bg-background text-foreground select-none">
+      <header className="relative z-10 px-5 pt-8 pb-10 sm:px-10 sm:pt-14 sm:pb-16">
+        <div className="flex items-center justify-between gap-4">
+          <img
+            src="/brand/logo.svg"
+            alt="Atomy"
+            className="h-10 w-auto sm:h-12"
           />
-          <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-500">
-            Atomy · Decks
-          </span>
-          <span className="hidden sm:inline-block h-3 w-px bg-neutral-700" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600 tabular-nums">
-            {count > 0 ? String(count).padStart(2, '0') : '--'} available
+          <span className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground tabular-nums">
+            decks · 2026
           </span>
         </div>
-        <h1 className="text-xl sm:text-3xl font-medium tracking-tight text-neutral-100">
-          Presentation library
-        </h1>
-        <p className="max-w-xl text-sm text-neutral-500">
-          Tap a deck to open the full-screen viewer. Swipe or use the arrow keys
-          to navigate slides.
+
+        <div className="mt-10 grid grid-cols-12 items-end gap-4 sm:mt-14">
+          <h1 className="col-span-7 min-w-0 font-serif text-[clamp(2rem,6vw,4rem)] leading-[0.92] tracking-[-0.02em] text-foreground sm:col-span-8">
+            Catálogo
+          </h1>
+          <div className="col-span-5 flex flex-col items-end text-right sm:col-span-4">
+            <span className="font-serif text-[clamp(1.75rem,4.75vw,3.25rem)] leading-none tracking-tight tabular-nums text-foreground">
+              {count > 0 ? count : '—'}
+            </span>
+            <span className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+              decks disponibles
+            </span>
+          </div>
+        </div>
+
+        <div aria-hidden className="mt-8 h-[2px] w-24 bg-primary sm:mt-10" />
+
+        <p className="mt-6 max-w-xl text-sm text-muted-foreground">
+          Toca un deck para abrirlo. Desliza o usa las flechas para navegar.
         </p>
       </header>
 
@@ -214,8 +206,8 @@ export function DeckList() {
 
       <main className="relative z-10 px-5 pb-16 sm:px-10 sm:pb-24">
         {error && (
-          <div className="rounded-md border border-red-900/50 bg-red-950/30 px-4 py-3 font-mono text-xs text-red-400/80">
-            <div className="mb-1 uppercase tracking-[0.3em] text-red-500/70">
+          <div className="border border-destructive/40 bg-destructive/10 px-4 py-3 font-mono text-xs text-destructive">
+            <div className="mb-1 uppercase tracking-[0.3em]">
               Catalog load error
             </div>
             <div className="opacity-80">{error}</div>
@@ -227,14 +219,14 @@ export function DeckList() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="aspect-[4/3] animate-pulse rounded-md bg-neutral-900/40"
+                className="aspect-[4/3] animate-pulse bg-muted"
               />
             ))}
           </div>
         )}
 
         {!error && entries && entries.length === 0 && (
-          <div className="font-mono text-xs uppercase tracking-[0.3em] text-neutral-600">
+          <div className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
             No decks in catalog.
           </div>
         )}
@@ -244,7 +236,7 @@ export function DeckList() {
           entries.length > 0 &&
           orderedEntries &&
           orderedEntries.length === 0 && (
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-muted-foreground">
               Sin resultados para &ldquo;{query.trim()}&rdquo;
             </p>
           )}
@@ -292,14 +284,14 @@ function DeckCard({
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      <div className="group relative block overflow-hidden rounded-md border border-neutral-900 bg-neutral-950/60 transition-colors hover:border-neutral-700">
+      <div className="group relative block overflow-hidden border border-border bg-card transition-colors hover:border-foreground/40">
         <Link
           to={`/decks/${entry.slug}`}
-          className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500"
+          className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          <div className="relative aspect-[4/3] overflow-hidden bg-neutral-900/40">
+          <div className="relative aspect-[4/3] overflow-hidden bg-muted">
             {!loaded && (
-              <div className="absolute inset-0 animate-pulse bg-neutral-900/50" />
+              <div className="absolute inset-0 animate-pulse bg-muted" />
             )}
             <img
               src={`/decks/${entry.slug}/slide-1.jpg`}
@@ -309,29 +301,21 @@ function DeckCard({
               onLoad={() => setLoaded(true)}
               className="relative block h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
             />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 55%)',
-              }}
-            />
           </div>
-          <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <div className="flex items-center justify-between gap-3 border-t border-border px-4 py-3">
             <div className="min-w-0">
-              <div className="truncate text-sm font-medium text-neutral-100">
+              <div className="truncate text-sm font-medium text-foreground">
                 {entry.name}
               </div>
               {entry.kind && (
-                <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600">
+                <div className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
                   {entry.kind}
                 </div>
               )}
             </div>
             <span
               aria-hidden
-              className="font-mono text-[10px] uppercase tracking-[0.28em] text-neutral-600 transition-colors group-hover:text-neutral-300"
+              className="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground transition-colors group-hover:text-primary"
             >
               Open →
             </span>
