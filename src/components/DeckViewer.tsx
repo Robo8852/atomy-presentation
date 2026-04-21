@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
 import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react'
 import { useIOSImmersive } from '../hooks/useIOSImmersive'
+import { PriceChip, type Price } from './PriceChip'
 
 type Manifest = { name: string; slideCount: number }
+
+type CatalogEntry = { slug: string; price?: Price }
 
 type FullscreenElement = HTMLElement & {
   webkitRequestFullscreen?: () => Promise<void> | void
@@ -27,6 +30,7 @@ export function DeckViewer({
   onBack?: () => void
 }) {
   const [manifest, setManifest] = useState<Manifest | null>(null)
+  const [price, setPrice] = useState<Price | undefined>(undefined)
   const [error, setError] = useState<string | null>(null)
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState<1 | -1>(1)
@@ -58,6 +62,24 @@ export function DeckViewer({
       .then((m) => setManifest(m))
       .catch((e) => {
         if (e.name !== 'AbortError') setError(String(e.message ?? e))
+      })
+    return () => ac.abort()
+  }, [slug])
+
+  // ── Fetch price from catalog ──────────────────────────────────────
+  // catalog.json is the library of index cards (spec: price-Spec.md).
+  // A missing entry or absent price field → no chip.
+  useEffect(() => {
+    const ac = new AbortController()
+    setPrice(undefined)
+    fetch('/decks/catalog.json', { signal: ac.signal })
+      .then((r) => (r.ok ? (r.json() as Promise<CatalogEntry[]>) : []))
+      .then((entries) => {
+        const entry = entries.find((e) => e.slug === slug)
+        setPrice(entry?.price)
+      })
+      .catch((e) => {
+        if (e.name !== 'AbortError') setPrice(undefined)
       })
     return () => ac.abort()
   }, [slug])
@@ -365,6 +387,22 @@ export function DeckViewer({
           />
         </div>
       </motion.div>
+
+      {/* Price chip (overlay, top-right under header). Fades with chrome. */}
+      {price && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{
+            opacity: chromeVisible ? 1 : 0,
+            y: chromeVisible ? 0 : -8,
+          }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute right-3 top-[64px] z-20 sm:right-8 sm:top-[84px]"
+          style={{ pointerEvents: 'none' }}
+        >
+          <PriceChip price={price} />
+        </motion.div>
+      )}
 
       {/* Stage — fills full viewport */}
       <div className="absolute inset-0 overflow-hidden">

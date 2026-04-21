@@ -7,291 +7,533 @@
   {
     "slug": "absolute-cuidado-del-cabello",
     "name": "Absolute Cuidado del Cabello",
-    "category": "Cuidado del Cabello"
+    "category": "Cuidado del Cabello",
+    "price": {
+      "usd": "55.00",
+      "pv": "28,000"
+    }
   },
   {
     "slug": "adelica-delineador-de-cejas",
     "name": "Adelica Delineador de Cejas",
-    "category": "Maquillaje"
+    "category": "Maquillaje",
+    "price": {
+      "usd": "4.00",
+      "pv": "3,000"
+    }
   },
   {
     "slug": "adelica-mascara-de-pestanas-volumen",
     "name": "Adelica Máscara de Pestañas Volumen",
-    "category": "Maquillaje"
+    "category": "Maquillaje",
+    "price": {
+      "usd": "15.50",
+      "pv": "9,000"
+    }
   },
   {
     "slug": "atomy-absolute",
     "name": "Atomy Absolute",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "260.00",
+      "pv": "175,000"
+    }
   },
   {
     "slug": "atomy-aceite-esencial-para-cabello-ne",
     "name": "Atomy Aceite Esencial para Cabello NE",
-    "category": "Cuidado del Cabello"
+    "category": "Cuidado del Cabello",
+    "price": {
+      "usd": "14.00",
+      "pv": "6,500"
+    }
   },
   {
     "slug": "atomy-aidam-limpiador",
     "name": "Atomy Aidam Limpiador",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "7.00",
+      "pv": "2,500"
+    }
   },
   {
     "slug": "atomy-bb-cream",
     "name": "Atomy BB Cream",
-    "category": "Maquillaje"
+    "category": "Maquillaje",
+    "price": {
+      "usd": "10.00",
+      "pv": "3,000"
+    }
   },
   {
     "slug": "atomy-brillo-labial",
     "name": "Atomy Brillo Labial",
-    "category": "Maquillaje"
+    "category": "Maquillaje",
+    "price": {
+      "usd": "14.00",
+      "pv": "7,000"
+    }
   },
   {
     "slug": "atomy-cafe-arabica-black",
     "name": "Atomy Café Arábica Black",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "21.00",
+      "pv": "5,500"
+    }
   },
   {
     "slug": "atomy-cepillo-dental-ninos",
     "name": "Atomy Cepillo Dental Niños",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "8.60",
+      "pv": "3,600"
+    }
   },
   {
     "slug": "atomy-cream-mist",
     "name": "Atomy Cream Mist",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "17.00",
+      "pv": "10,000"
+    }
   },
   {
     "slug": "atomy-cuidado-nocturno-4-pasos",
     "name": "Atomy Cuidado Nocturno 4 Pasos",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "45.00",
+      "pv": "21,000"
+    }
   },
   {
     "slug": "atomy-daily-expert-mask",
     "name": "Atomy Daily Expert Mask",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "12.50",
+      "pv": "6,000"
+    }
   },
   {
     "slug": "atomy-desmaquillante-bifasico",
     "name": "Atomy Desmaquillante Bifásico",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "11.39",
+      "pv": "4,500"
+    }
   },
   {
     "slug": "atomy-e-omega-3",
     "name": "Atomy E-Omega 3",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "35.00",
+      "pv": "18,000"
+    }
   },
   {
     "slug": "atomy-esencia-para-rizos",
     "name": "Atomy Esencia para Rizos",
-    "category": "Cuidado del Cabello"
+    "category": "Cuidado del Cabello",
+    "price": {
+      "usd": "10.00",
+      "pv": "6,500"
+    }
   },
   {
     "slug": "atomy-fermento-de-noni-organico",
     "name": "Atomy Fermento de Noni Orgánico",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "57.00",
+      "pv": "35,000"
+    }
   },
   {
     "slug": "atomy-fermento-de-noni-organico-sachet",
     "name": "Atomy Fermento de Noni Orgánico Sachet",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "62.00",
+      "pv": "38,000"
+    }
   },
   {
     "slug": "atomy-gel-de-manzana-verde",
     "name": "Atomy Gel de Manzana Verde",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "32.00",
+      "pv": "18,000"
+    }
   },
   {
     "slug": "atomy-hierro",
     "name": "Atomy Hierro",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "32.00",
+      "pv": "17,000"
+    }
   },
   {
     "slug": "atomy-homme-all-in-one-wash",
     "name": "Atomy Homme All In One Wash",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "18.00",
+      "pv": "8,000"
+    }
   },
   {
     "slug": "atomy-jabon-de-manos",
     "name": "Atomy Jabón de Manos",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "6.00",
+      "pv": "2,000"
+    }
   },
   {
     "slug": "atomy-kit-de-viaje",
     "name": "Atomy Kit de Viaje",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "15.00",
+      "pv": "4,000"
+    }
   },
   {
     "slug": "atomy-limpiador-herbal",
     "name": "Atomy Limpiador Herbal",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "12.00",
+      "pv": "5,000"
+    }
   },
   {
     "slug": "atomy-parche-de-hidrogel",
     "name": "Atomy Parche de Hidrogel",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "10.00",
+      "pv": "7,500"
+    }
   },
   {
     "slug": "atomy-pasta-dental",
     "name": "Atomy Pasta Dental",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "22.00",
+      "pv": "6,000"
+    }
   },
   {
     "slug": "atomy-pasta-dental-sensitive",
     "name": "Atomy Pasta Dental Sensitive",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "10.12",
+      "pv": "4,500"
+    }
   },
   {
     "slug": "atomy-probioticos-10",
     "name": "Atomy Probióticos 10_",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "40.00",
+      "pv": "20,000"
+    }
   },
   {
     "slug": "atomy-protector-solar-barra",
     "name": "Atomy Protector Solar Barra",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "12.00",
+      "pv": "6,000"
+    }
   },
   {
     "slug": "atomy-protector-solar-ne",
     "name": "Atomy Protector Solar NE",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "12.00",
+      "pv": "6,000"
+    }
   },
   {
     "slug": "atomy-sistema-de-cuidado-para-la-piel-the-fame",
     "name": "Atomy Sistema de Cuidado para la Piel The Fame",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "120.00",
+      "pv": "77,000"
+    }
   },
   {
     "slug": "atomy-spray-de-propoleo-verde",
     "name": "Atomy Spray de Propóleo Verde",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "26.00",
+      "pv": "11,000"
+    }
   },
   {
     "slug": "atomy-suavizante-de-telas-ne",
     "name": "Atomy Suavizante de Telas NE",
-    "category": "Hogar"
+    "category": "Hogar",
+    "price": {
+      "usd": "14.00",
+      "pv": "5,000"
+    }
   },
   {
     "slug": "atomy-terapia-de-manos-ne",
     "name": "Atomy Terapia de Manos NE",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "18.50",
+      "pv": "8,500"
+    }
   },
   {
     "slug": "atomy-tratamiento-labial-ne",
     "name": "Atomy Tratamiento Labial NE",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "6.50",
+      "pv": "3,000"
+    }
   },
   {
     "slug": "balsamo-para-manos",
     "name": "BALSAMO PARA MANOS",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "6.33",
+      "pv": "2,500"
+    }
   },
   {
     "slug": "crema-no-lactea-ne",
     "name": "Crema No Lactea NE",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "14.87",
+      "pv": "2,200"
+    }
   },
   {
     "slug": "detergente-para-ropa-ne",
     "name": "Detergente Para Ropa NE",
-    "category": "Hogar"
+    "category": "Hogar",
+    "price": {
+      "usd": "17.00",
+      "pv": "5,000"
+    }
   },
   {
     "slug": "editable-sistemacuidadobucal2",
     "name": "Editable_SistemaCuidadoBucal2",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "15.40",
+      "pv": "6,500"
+    }
   },
   {
     "slug": "editable-tratamientoliquido",
     "name": "Editable_TratamientoLíquido",
-    "category": "Cuidado del Cabello"
+    "category": "Cuidado del Cabello",
+    "price": {
+      "usd": "7.00",
+      "pv": "4,000"
+    }
   },
   {
     "slug": "espanol-ppt-protein-intensive-haircare-editable",
     "name": "ESPAÑOL PPT_Protein Intensive Haircare Editable",
-    "category": "Cuidado del Cabello"
+    "category": "Cuidado del Cabello",
+    "price": {
+      "usd": "22.40",
+      "pv": "8,000"
+    }
   },
   {
     "slug": "fibra-imagenes",
     "name": "fibra imagenes",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "32.00",
+      "pv": "21,000"
+    }
   },
   {
     "slug": "fresh-sun-lotion",
     "name": "Fresh Sun Lotion",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "20.00",
+      "pv": "11,000"
+    }
   },
   {
     "slug": "gel-de-granada-ne",
     "name": "Gel de Granada NE",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "77.00",
+      "pv": "37,000"
+    }
   },
   {
     "slug": "gomitas-de-propoleo-ne",
     "name": "Gomitas de Propoleo NE",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "20.00",
+      "pv": "11,000"
+    }
   },
   {
     "slug": "guantes-de-latex-final",
     "name": "Guantes de latex Final",
-    "category": "Hogar"
+    "category": "Hogar",
+    "price": {
+      "usd": "8.00",
+      "pv": "3,000"
+    }
   },
   {
     "slug": "hemohim",
     "name": "Hemohim",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "105.00",
+      "pv": "66,000"
+    }
   },
   {
     "slug": "herbal-cabello-ne",
     "name": "Herbal Cabello NE",
-    "category": "Cuidado del Cabello"
+    "category": "Cuidado del Cabello",
+    "price": {
+      "items": [
+        {
+          "label": "Shampoo",
+          "usd": "14.00",
+          "pv": "7,000"
+        },
+        {
+          "label": "Acondicionador",
+          "usd": "16.00",
+          "pv": "8,000"
+        }
+      ]
+    }
   },
   {
     "slug": "hydra-balm-ne",
     "name": "HYDRA BALM NE",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "14.93",
+      "pv": "7,400"
+    }
   },
   {
     "slug": "lavatrastes-ne",
     "name": "Lavatrastes - NE",
-    "category": "Hogar"
+    "category": "Hogar",
+    "price": {
+      "usd": "12.00",
+      "pv": "5,000"
+    }
   },
   {
     "slug": "limpiador-profundo-aceite-editable",
     "name": "Limpiador Profundo Aceite Editable",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "20.00",
+      "pv": "8,000"
+    }
   },
   {
     "slug": "ppt-esponjillas-de-acero-ineoxidable-ne",
     "name": "PPT Esponjillas de acero ineoxidable NE",
-    "category": "Hogar"
+    "category": "Hogar",
+    "price": {
+      "usd": "4.00",
+      "pv": "1,000"
+    }
   },
   {
     "slug": "ppt-esponjillas-multiproposito-ne",
     "name": "PPT Esponjillas Multiproposito NE",
-    "category": "Hogar"
+    "category": "Hogar",
+    "price": {
+      "usd": "6.50",
+      "pv": "2,000"
+    }
   },
   {
     "slug": "ppt-exfoliante-corporal-a-base-de-sales",
     "name": "PPT Exfoliante corporal a base de sales",
-    "category": "Higiene Personal"
+    "category": "Higiene Personal",
+    "price": {
+      "usd": "12.63",
+      "pv": "6,800"
+    }
   },
   {
     "slug": "ppt-absolute-essence-sun-uv-ne",
     "name": "PPT_Absolute Essence Sun UV. NE",
-    "category": "Cuidado de la Piel"
+    "category": "Cuidado de la Piel",
+    "price": {
+      "usd": "11.89",
+      "pv": "4,600"
+    }
   },
   {
     "slug": "puer-te",
     "name": "Puer Te",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "35.00",
+      "pv": "16,000"
+    }
   },
   {
     "slug": "scalpcare-ne",
     "name": "ScalpCare NE",
-    "category": "Cuidado del Cabello"
+    "category": "Cuidado del Cabello",
+    "price": {
+      "usd": "32.00",
+      "pv": "15,000"
+    }
   },
   {
     "slug": "spirulina",
     "name": "Spirulina",
-    "category": "Consumibles"
+    "category": "Consumibles",
+    "price": {
+      "usd": "26.00",
+      "pv": "12,000"
+    }
   }
 ]

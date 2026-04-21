@@ -24,6 +24,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+from pptx import Presentation
+
 ROOT = Path("/home/owner/Atomy")
 ONEPAGER_DIR = ROOT / "downloads" / "onepagers"
 OUT_ROOT = ROOT / "atomy-deck-viewer" / "public" / "decks"
@@ -119,6 +121,54 @@ CATEGORIES: dict[str, str] = {
 }
 
 
+# ── Price extraction ──────────────────────────────────────────────
+# Onepagers carry their price block on slide 1 in one of two shapes:
+#   Single: two adjacent paragraphs  "<usd> USD" / "<pv> PV".
+#   Dual:   one paragraph per item   "<label>  <usd> USD  ·  <pv> PV".
+# Unpriced onepagers simply don't contain a USD/PV paragraph.
+
+_SINGLE_USD = re.compile(r"^(\d[\d,.]*)\s*USD$")
+_SINGLE_PV = re.compile(r"^(\d[\d,.]*)\s*PV$")
+_DUAL_LINE = re.compile(
+    r"^(?P<label>.+?)\s{2,}(?P<usd>\d[\d,.]*)\s*USD"
+    r"[\s·•\-–—]+(?P<pv>\d[\d,.]*)\s*PV$"
+)
+
+
+def extract_price(pptx_path: Path) -> dict | None:
+    prs = Presentation(pptx_path)
+    paragraphs: list[str] = []
+    for shape in prs.slides[0].shapes:
+        if not shape.has_text_frame:
+            continue
+        for para in shape.text_frame.paragraphs:
+            text = para.text.strip()
+            if text:
+                paragraphs.append(text)
+
+    # Dual-price sweep: any paragraph matching the dual shape contributes an item.
+    items: list[dict] = []
+    for text in paragraphs:
+        m = _DUAL_LINE.match(text)
+        if m:
+            items.append({
+                "label": m.group("label").strip(),
+                "usd": m.group("usd"),
+                "pv": m.group("pv"),
+            })
+    if items:
+        return {"items": items}
+
+    # Single-price sweep: USD line immediately followed by PV line.
+    for i in range(len(paragraphs) - 1):
+        u = _SINGLE_USD.match(paragraphs[i])
+        v = _SINGLE_PV.match(paragraphs[i + 1])
+        if u and v:
+            return {"usd": u.group(1), "pv": v.group(1)}
+
+    return None
+
+
 def pptx_to_pdf(pptx: Path, work_dir: Path, tag: str) -> Path:
     profile = work_dir / f"soffice_profile_{tag}"
     profile.mkdir(exist_ok=True)
@@ -205,8 +255,11 @@ def main() -> int:
 
     # Rebuild catalog: Presentación first, then every detail deck found on disk,
     # alphabetical by name. Source of truth is public/decks/<slug>/manifest.json.
+    # Price merges in from the matching onepager PPTX (name-for-name); missing
+    # or unpriced onepagers silently omit the field.
     catalog_path = OUT_ROOT / "catalog.json"
     product_entries: list[dict] = []
+    priced_count = 0
     for deck_dir in sorted(OUT_ROOT.iterdir()):
         if not deck_dir.is_dir() or deck_dir.name == DECK_SLUG:
             continue
@@ -217,15 +270,23 @@ def main() -> int:
         slug = data["slug"]
         if slug not in CATEGORIES:
             raise SystemExit(f"Slug '{slug}' missing from CATEGORIES dict")
-        product_entries.append({
+        entry: dict = {
             "slug": slug,
             "name": data["name"],
             "category": CATEGORIES[slug],
-        })
+        }
+        onepager = ONEPAGER_DIR / f"{data['name']}.pptx"
+        if onepager.exists():
+            price = extract_price(onepager)
+            if price is not None:
+                entry["price"] = price
+                priced_count += 1
+        product_entries.append(entry)
     product_entries.sort(key=lambda e: e["name"].lower())
     new_catalog = [{"slug": DECK_SLUG, "name": DECK_NAME, "category": None}] + product_entries
     catalog_path.write_text(json.dumps(new_catalog, ensure_ascii=False, indent=2) + "\n")
     print(f"catalog.json: {len(new_catalog)} entries (combined deck first)")
+    print(f"  priced: {priced_count}/{len(product_entries)}")
     return 0
 
 
